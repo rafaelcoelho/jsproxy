@@ -1,0 +1,82 @@
+{
+  "products": [
+    {
+      "name": "Product_XYZ",
+      "price": 100,
+      "id": 1
+    },
+    {
+      "name": "Product_XYZ",
+      "price": 100,
+      "id": 2
+    },
+    {
+      "name": "Product_XPTO",
+      "price": 100,
+      "id": 3
+    },
+    {
+      "name": "Product_XPO",
+      "price": 100,
+      "id": 4
+    },
+    {
+      "name": "Product_XPO7",
+      "price": 100,
+      "id": 5
+    },
+    {
+      "name": "Product_XPO9",
+      "price": 100,
+      "id": 6
+    },
+    {
+      "name": "Product_XPO9",
+      "price": 100,
+      "id": 7
+    },
+    {
+      "name": "Product_XPO9",
+      "price": 100,
+      "id": 8
+    },
+    {
+      "name": "Product_XPO9",
+      "price": 100,
+      "id": 9
+    },
+    {
+      "name": "Product_XPO9",
+      "price": 100,
+      "id": 10
+    },
+    {
+      "name": "Product_XPO9",
+      "price": 100,
+      "id": 11
+    },
+    {
+      "name": "Product_XPO9",
+      "price": 100,
+      "id": 12
+    },
+    {
+      "name": "Product_testing",
+      "price": 150,
+      "id": 13
+    },
+    {
+      "price": 150,
+      "id": 14
+    },
+    {
+      "price": 150,
+      "id": 15
+    },
+    {
+      "name": "Product_XPO9",
+      "price": 500,
+      "id": 16
+    }
+  ]
+}
