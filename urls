@@ -1,0 +1,9 @@
+# URLS file for siege
+# --
+# Format the url entries in any of the following formats:
+http://localhost:8080/products/1
+http://localhost:8080/products/2
+http://localhost:8080/products/3
+http://localhost:8080/products
+http://localhost:8080/products/21
+http://localhost:8080/products/24
