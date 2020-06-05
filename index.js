@@ -3,10 +3,10 @@ const express = require('express')
 const parser = require('body-parser')
 const crypto = require('crypto')
 const localConfiguration = require('./config')
+const cacheDB = require('./cache')
 
 localConfiguration.forEach(cfg => {
   let app = express()
-  let cache = {}
 
   app.use(parser.raw({ type: cfg.mediaType }))
 
@@ -17,18 +17,18 @@ localConfiguration.forEach(cfg => {
     if (cfg.cache) {
       let hash = crypto.createHash('md5').update(requestIdentifier + req.method).digest('hex')
 
-      if (cache[hash] == undefined) {
+      cacheDB.read(hash, (result) => {
+        if (result) {
+          res.status(result.httpCode).send(result.payload)
+          return
+        }
+
         sendRequest(cfg, req, (result, httpCode) => {
           res.status(httpCode).send(result)
 
-          cache[hash] = {
-            payload: result,
-            request: requestIdentifier
-          }
+          cacheDB.write(hash, httpCode, result)
         })
-      } else {
-        res.send(cache[hash].payload)
-      }
+      })
     } else {
       sendRequest(cfg, req, (result, httpCode) => {
         res.send(httpCode).send(result)
