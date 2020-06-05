@@ -1,7 +1,7 @@
 const axios = require('axios').default
 const express = require('express')
 const parser = require('body-parser')
-const crypto = require('crypto')
+const md5 = require('md5')
 const localConfiguration = require('./config')
 const cacheDB = require('./cache')
 
@@ -15,7 +15,7 @@ localConfiguration.forEach(cfg => {
     let requestIdentifier = req.body + req.originalUrl
 
     if (cfg.cache) {
-      let hash = crypto.createHash('md5').update(requestIdentifier + req.method).digest('hex')
+      let hash = md5(requestIdentifier + req.method)
 
       cacheDB.read(hash, (result) => {
         if (result) {
