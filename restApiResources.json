@@ -118,5 +118,13 @@
       "price": 210,
       "id": 24
     }
+  ],
+  "items": [
+    {
+      "name": "item_0",
+      "description": "some description updated",
+      "price": 900,
+      "id": 1
+    }
   ]
 }

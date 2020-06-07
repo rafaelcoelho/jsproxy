@@ -1,18 +1,32 @@
 {
   "nodes": [
     {
-      "server": "remoteServerAddress",
-      "url": "/wsi/services",
-      "mediaType": "text/xml",
-      "targetPort": 8590,
+      "configs": [
+        {
+          "server": "remoteServerAddress",
+          "url": "/wsi/services",
+          "mediaType": "text/xml",
+          "targetPort": 8590
+        }
+      ],
       "srcPort": 8590,
       "cache": true
     },
     {
-      "server": "localhost",
-      "url": "/products",
-      "mediaType": "application/json",
-      "targetPort": 8081,
+      "configs": [
+        {
+          "server": "127.0.0.1",
+          "url": "/products",
+          "mediaType": "application/json",
+          "targetPort": 8081
+        },
+        {
+          "server": "127.0.0.1",
+          "url": "/items",
+          "mediaType": "application/json",
+          "targetPort": 8081
+        }
+      ],
       "srcPort": 8080,
       "cache": true
     }

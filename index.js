@@ -12,36 +12,41 @@ flushEP()
 localConfiguration.forEach(cfg => {
   let app = express()
 
-  app.use(parser.raw({ type: cfg.mediaType }))
+  cfg.configs.forEach(service => {
+    app.use(parser.raw({ type: service.mediaType }))
 
-  app.use(cfg.url, (req, res) => {
+    app.use(service.url, (req, res, next) => {
+      if (cfg.cache) {
+        let requestIdentifier = req.body + req.originalUrl
+        let hash = md5(requestIdentifier + req.method)
 
-    let requestIdentifier = req.body + req.originalUrl
+        cacheDB.read(hash, (result) => {
+          if (result) {
+            res.status(result.httpCode).send(result.payload)
+          } else {
+            next()
+          }
+        })
+      } else {
+        next()
+      }
+    })
 
-    if (cfg.cache) {
+    app.use(service.url, (req, res) => {
+      let requestIdentifier = req.body + req.originalUrl
       let hash = md5(requestIdentifier + req.method)
 
-      cacheDB.read(hash, (result) => {
-        if (result) {
-          res.status(result.httpCode).send(result.payload)
-          return
-        }
+      sendRequest(service, req, (result, httpCode) => {
+        res.status(httpCode).send(result)
 
-        sendRequest(cfg, req, (result, httpCode) => {
-          res.status(httpCode).send(result)
+        cacheDB.write(hash, httpCode, result)
+      })
+    })
 
-          cacheDB.write(hash, httpCode, result)
-        })
-      })
-    } else {
-      sendRequest(cfg, req, (result, httpCode) => {
-        res.send(httpCode).send(result)
-      })
-    }
   })
 
   app.listen(cfg.srcPort);
-});
+})
 
 function sendRequest(localConfig, req, resultHandler) {
   let config = {
