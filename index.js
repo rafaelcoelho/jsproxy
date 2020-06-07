@@ -2,8 +2,12 @@ const axios = require('axios').default
 const express = require('express')
 const parser = require('body-parser')
 const md5 = require('md5')
+
 const localConfiguration = require('./config')
 const cacheDB = require('./cache')
+const flushEP = require('./flushEndpoint')
+
+flushEP()
 
 localConfiguration.forEach(cfg => {
   let app = express()
