@@ -60,6 +60,6 @@ function sendRequest(localConfig, req, resultHandler) {
     })
     .catch(err => {
       console.error("Error: " + err)
-      resultHandler(err, err.response.status)
+      resultHandler(err, err.response ? err.response.status : 500)
     })
 }
