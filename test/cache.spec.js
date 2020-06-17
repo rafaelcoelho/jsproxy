@@ -1,26 +1,37 @@
+var proxyquire = require('proxyquire')
 var assert = require('assert')
 var sinon = require('sinon')
-var cache = require('./../cache')
 
-function once(fn) {
-  var returnValue, called = false;
-  return function () {
-      if (!called) {
-          called = true;
-          returnValue = fn.apply(this, arguments);
-      }
-      return returnValue;
-  };
+var sqliteStub = (cb) => {
+  cb(null, {statusCode: 200})
 }
 
-describe('Some testing suite', () => {
-  it('test case', (done) => {
-    let cb = sinon.fake()
-    let proxy = once(cb)
+var fsStub = () => {
+    return true
+  };
 
-    proxy()
+var cache
 
-    assert(cb.notCalled)
-    done()
+describe('Setup', () => {
+  beforeEach(() => {
+    cache = proxyquire('./../cache', {
+      sqlite: {
+        Database: {
+            get: sqliteStub
+          }
+      },
+      fs: {
+        existsSync: fsStub
+      }
+    })
+  })
+
+  describe('Some testing suite', () => {
+    it('test case', (done) => {
+      cache.read('10', (err, res) => {
+        console.log(res)
+      })
+      done()
+    })
   })
 })

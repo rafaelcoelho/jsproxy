@@ -2,7 +2,7 @@ const sqlite = require('sqlite3').verbose();
 
 var fs = require('fs')
 var dbExists = fs.existsSync('./stub.db')
-var db;
+var db = null;
 
 if (!dbExists) {
   db = new sqlite.Database('./stub.db', (err) => {
