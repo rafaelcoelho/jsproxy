@@ -104,7 +104,7 @@ dist
 .tern-port
 
 #VScode
-.vscode/
+!.vscode/launch.json
 
 #Database
 *.db
