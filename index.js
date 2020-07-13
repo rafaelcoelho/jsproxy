@@ -16,6 +16,8 @@ localConfiguration.forEach(cfg => {
     app.use(parser.raw({ type: service.mediaType }))
 
     app.use(service.url, (req, res, next) => {
+      res.type(service.mediaType)
+
       if (cfg.cache) {
         let requestIdentifier = req.body + req.originalUrl
         let hash = md5(requestIdentifier + req.method)
