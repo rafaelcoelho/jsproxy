@@ -2,12 +2,14 @@ const axios = require('axios').default
 const express = require('express')
 const parser = require('body-parser')
 const md5 = require('md5')
+const https = require('https')
+var fs = require('fs')
 
 const localConfiguration = require('./config')
 const cacheDB = require('./cache')
 const flushEP = require('./flushEndpoint')
 
-const timeout = 8000
+const timeout = 0
 var defaultTimeout = 0;
 
 flushEP()
@@ -29,16 +31,12 @@ localConfiguration.forEach(cfg => {
 
         cacheDB.read(hash, (result) => {
           if (result) {
-            //console.log('Reading from caching for: ' + req.method + ' : ' + req.originalUrl)
-
             isReqCount++
 
             if (res.req.originalUrl.includes('ccoi')) {
 
               if (isReqCount >= 2500) {
                 isReqCount = 0
-                console.log('Adding timeout ccoi')
-
                 setTimeout(function () {
                   res.status(result.httpCode).send(result.payload)
                 }, timeout)
@@ -48,8 +46,6 @@ localConfiguration.forEach(cfg => {
             } else if (res.req.originalUrl.includes('submit')) {
               
               if (isReqCount >= 2400) {
-                console.log('Adding timeout submit')
-
                 setTimeout(function () {
                   res.status(result.httpCode).send(result.payload)
                 }, timeout)
@@ -57,7 +53,6 @@ localConfiguration.forEach(cfg => {
                 res.status(result.httpCode).send(result.payload)
               }
             } else {
-              //res.status(result.httpCode).send(result.payload)
               setTimeout(function () {
                 res.status(result.httpCode).send(result.payload)
               }, defaultTimeout)
@@ -86,7 +81,18 @@ localConfiguration.forEach(cfg => {
 
   })
 
-  app.listen(cfg.srcPort);
+  https.createServer({
+    key: fs.readFileSync('privkey.pem'),
+    cert: fs.readFileSync('cert.pem'),
+    requestCert: true,
+    rejectUnauthorized: false,
+    ca: [fs.readFileSync('cert.pem')]
+  }, app)
+  .listen(cfg.srcPort, function() {
+    console.log('Endpoint is listening over https on ' + cfg.srcPort + ' port')
+  })
+
+  // app.listen(cfg.srcPort);
 })
 
 function sleep(ms) {
