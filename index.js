@@ -7,10 +7,15 @@ const localConfiguration = require('./config')
 const cacheDB = require('./cache')
 const flushEP = require('./flushEndpoint')
 
+const timeout = 8000
+var defaultTimeout = 0;
+
 flushEP()
 
 localConfiguration.forEach(cfg => {
   let app = express()
+
+  var isReqCount = 0;
 
   cfg.configs.forEach(service => {
     app.use(parser.raw({ type: service.mediaType }))
@@ -24,7 +29,39 @@ localConfiguration.forEach(cfg => {
 
         cacheDB.read(hash, (result) => {
           if (result) {
-            res.status(result.httpCode).send(result.payload)
+            //console.log('Reading from caching for: ' + req.method + ' : ' + req.originalUrl)
+
+            isReqCount++
+
+            if (res.req.originalUrl.includes('ccoi')) {
+
+              if (isReqCount >= 2500) {
+                isReqCount = 0
+                console.log('Adding timeout ccoi')
+
+                setTimeout(function () {
+                  res.status(result.httpCode).send(result.payload)
+                }, timeout)
+              } else {
+                res.status(result.httpCode).send(result.payload)
+              }
+            } else if (res.req.originalUrl.includes('submit')) {
+              
+              if (isReqCount >= 2400) {
+                console.log('Adding timeout submit')
+
+                setTimeout(function () {
+                  res.status(result.httpCode).send(result.payload)
+                }, timeout)
+              } else {
+                res.status(result.httpCode).send(result.payload)
+              }
+            } else {
+              //res.status(result.httpCode).send(result.payload)
+              setTimeout(function () {
+                res.status(result.httpCode).send(result.payload)
+              }, defaultTimeout)
+            }
           } else {
             next()
           }
@@ -35,6 +72,8 @@ localConfiguration.forEach(cfg => {
     })
 
     app.use(service.url, (req, res) => {
+      console.log('Calling southbound for: ' + req.method + ' : ' + req.originalUrl)
+
       let requestIdentifier = req.body + req.originalUrl
       let hash = md5(requestIdentifier + req.method)
 
@@ -49,6 +88,12 @@ localConfiguration.forEach(cfg => {
 
   app.listen(cfg.srcPort);
 })
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 function sendRequest(localConfig, req, resultHandler) {
   let config = {
