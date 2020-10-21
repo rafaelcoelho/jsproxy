@@ -9,8 +9,14 @@
           "targetPort": 8590
         }
       ],
+      "cache": true,
       "srcPort": 8590,
-      "cache": true
+      "https": {
+        "enable": false,
+        "keyFile": "privkey.pem",
+        "certFile": "cert.pem",
+        "caFile": "cert.pem"
+      }
     },
     {
       "configs": [

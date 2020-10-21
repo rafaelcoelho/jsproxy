@@ -32,6 +32,34 @@ In order to create the endpoints at your local the file `./config.json` have to 
 ## Cache
 The cache is persisted upon SQLite Database
 
+## HTTPS
+The https termination is supported and the settings are done by `./config.json` file upon each node that will be exposed. If the https configuration is not part of the configuration the plain HTTP termination will be used.
+
+### For example
+```json
+{
+  "nodes": [
+    {
+      "configs": [
+        {
+          "server": "remoteServerAddress",
+          "url": "/wsi/services",
+          "mediaType": "text/xml",
+          "targetPort": 8590
+        }
+      ],
+      "cache": true,
+      "srcPort": 8590,
+      "https": {
+        "enable": false,
+        "keyFile": "privkey.pem",
+        "certFile": "cert.pem",
+        "caFile": "cert.pem"
+      }
+    }]
+}
+```
+
 ## Try it out without real server
 To try in local with no server available the `json-server` can be used, like
 

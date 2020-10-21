@@ -9,15 +9,10 @@ const localConfiguration = require('./config')
 const cacheDB = require('./cache')
 const flushEP = require('./flushEndpoint')
 
-const timeout = 0
-var defaultTimeout = 0;
-
 flushEP()
 
 localConfiguration.forEach(cfg => {
   let app = express()
-
-  var isReqCount = 0;
 
   cfg.configs.forEach(service => {
     app.use(parser.raw({ type: service.mediaType }))
@@ -31,32 +26,7 @@ localConfiguration.forEach(cfg => {
 
         cacheDB.read(hash, (result) => {
           if (result) {
-            isReqCount++
-
-            if (res.req.originalUrl.includes('ccoi')) {
-
-              if (isReqCount >= 2500) {
-                isReqCount = 0
-                setTimeout(function () {
-                  res.status(result.httpCode).send(result.payload)
-                }, timeout)
-              } else {
-                res.status(result.httpCode).send(result.payload)
-              }
-            } else if (res.req.originalUrl.includes('submit')) {
-              
-              if (isReqCount >= 2400) {
-                setTimeout(function () {
-                  res.status(result.httpCode).send(result.payload)
-                }, timeout)
-              } else {
-                res.status(result.httpCode).send(result.payload)
-              }
-            } else {
-              setTimeout(function () {
-                res.status(result.httpCode).send(result.payload)
-              }, defaultTimeout)
-            }
+            res.status(result.httpCode).send(result.payload)
           } else {
             next()
           }
@@ -78,27 +48,28 @@ localConfiguration.forEach(cfg => {
         cacheDB.write(hash, httpCode, result)
       })
     })
-
   })
 
-  https.createServer({
-    key: fs.readFileSync('privkey.pem'),
-    cert: fs.readFileSync('cert.pem'),
-    requestCert: true,
-    rejectUnauthorized: false,
-    ca: [fs.readFileSync('cert.pem')]
-  }, app)
-  .listen(cfg.srcPort, function() {
-    console.log('Endpoint is listening over https on ' + cfg.srcPort + ' port')
+  configureServer(cfg.https, app).listen(cfg.srcPort, _ => {
+    console.log('Endpoint is listening on port ' + cfg.srcPort + ' port')
   })
 
-  // app.listen(cfg.srcPort);
 })
 
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
+function configureServer(cfg, app) {
+  if (cfg && cfg.enable) {
+    console.log('Endpoint is listening over https')
+
+    return https.createServer({
+      key: fs.readFileSync(cfg.keyFile),
+      cert: fs.readFileSync(cfg.certFile),
+      requestCert: true,
+      rejectUnauthorized: false,
+      ca: [fs.readFileSync(cfg.caFile)]
+    }, app)
+  }
+
+  return app;
 }
 
 function sendRequest(localConfig, req, resultHandler) {
