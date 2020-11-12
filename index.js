@@ -6,6 +6,9 @@ const https = require('https')
 var fs = require('fs')
 
 const localConfiguration = require('./config')
+
+const runningMode = localConfiguration.getProperty('runningMode') | 'dual'
+
 const cacheDB = require('./cache')
 const flushEP = require('./flushEndpoint')
 
@@ -20,7 +23,7 @@ localConfiguration.forEach(cfg => {
     app.use(service.url, (req, res, next) => {
       res.type(service.mediaType)
 
-      if (cfg.cache) {
+      if (runningMode != 'recorder' && cfg.cache) {
         let requestIdentifier = req.body + req.originalUrl
         let hash = md5(requestIdentifier + req.method)
 
@@ -37,14 +40,16 @@ localConfiguration.forEach(cfg => {
     })
 
     app.use(service.url, (req, res) => {
-      console.log('Calling southbound for: ' + req.method + ' : ' + req.originalUrl)
+      console.log('Try to call southbound for: ' + req.method + ' : ' + req.originalUrl)
 
       let requestIdentifier = req.body + req.originalUrl
       let hash = md5(requestIdentifier + req.method)
 
+      if (['recorder', 'dual'].indexOf(runningMode) == -1)
+        return console.error("Won't call southbound due to runningMode = " + runningMode)
+
       sendRequest(service, req, (result, httpCode) => {
         res.status(httpCode).send(result)
-
         cacheDB.write(hash, httpCode, result)
       })
     })
