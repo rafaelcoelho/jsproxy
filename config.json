@@ -1,4 +1,6 @@
 {
+  "multipleResponseEnable": true,
+  "runningMode": "recorder",
   "nodes": [
     {
       "configs": [

@@ -1,4 +1,7 @@
 const sqlite = require('sqlite3').verbose();
+const localConfiguration = require('./config')
+
+const isMultipleResponseEnable = localConfiguration.getProperty('multipleResponseEnable') | false
 
 var fs = require('fs')
 var dbExists = fs.existsSync('./stub.db')
@@ -6,16 +9,20 @@ var db = null;
 
 if (!dbExists) {
   db = new sqlite.Database('./stub.db', (err) => {
+
     if (err) {
       console.error('Error to open db' + err.message)
     }
-    db.run('CREATE TABLE cache(id text, httpCode text, seq number, payload blob)')
+
+    db.run('CREATE TABLE cache(id text, httpCode text, seq number DEFAULT 0, payload blob)')
   })
 } else {
-  db = new sqlite.Database('./stub.db', (err) => {
+  db = new sqlite.Database('./stub.db', err => {
+
     if (err) console.error('Error to open db' + err.message)
-    let resetSeq = `UPDATE cache SET seq = 0
-                    WHERE id IS NOT NULL`
+
+    let resetSeq = `UPDATE cache SET seq = 0 WHERE id IS NOT NULL`
+
     db.run(resetSeq)
   })
 }
@@ -31,20 +38,24 @@ var read = (key, callback) => {
     let rawPayload
 
     if (row) {
+
       rawPayload = JSON.parse(row.payload)
       row.payload = rawPayload[row.seq]
+
       if (rawPayload.length == ++row.seq) {
         row.seq = 0;
       }
+
       updateSeq(key, row.seq)
     }
 
     callback(row, rawPayload)
   })
 }
+
 var updateSeq = (key, seq) => {
-  const query = `UPDATE cache SET seq = ?
-                 WHERE id = ?`
+  const query = `UPDATE cache SET seq = ? WHERE id = ?`
+
   db.run(query, [seq, key], err => {
     if (err) {
       console.log('Error to save in cache: ' + err.message)
@@ -52,15 +63,23 @@ var updateSeq = (key, seq) => {
     }
   })
 }
+
 var write = (key, httpCode, payload) => {
   read(key, (result, resultArray) => {
     if (result) {
-      resultArray.push(payload)
-      update(key, httpCode, resultArray)
+      let data = [payload]
+
+      if (isMultipleResponseEnable) {
+        resultArray.push(payload)
+        data = resultArray
+      }
+
+      update(key, httpCode, data)
     } else {
-      const query = `INSERT into cache(id, httpCode, payload, seq)
-      VALUES(?, ?, ?, ?)`;
-      db.run(query, [key, httpCode, JSON.stringify([payload]), 0], errWrite => {
+      const query = `INSERT into cache(id, httpCode, payload)
+                      VALUES(?, ?, ?)`
+
+      db.run(query, [key, httpCode, JSON.stringify([payload])], errWrite => {
         if (errWrite) {
           console.log('Error to save in cache: ' + errWrite.message)
           return
@@ -69,6 +88,7 @@ var write = (key, httpCode, payload) => {
     }
   })
 }
+
 var update = (key, httpCode, payload) => {
   const query = `UPDATE cache SET httpCode = ?, payload = ?
                  WHERE id = ?`;
