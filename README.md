@@ -54,7 +54,7 @@ In order to create the endpoints at your local the file `./config.json` have to 
 ### Multiple Response Support
 The configuration key `multipleResponseEnable` is utilized in order to provide support for multiple response upon the same request.
 
-By defautl this configuration is set to `false`
+By default this configuration is set to `false`
 
 For instance:
  > Read -> Update -> Read
