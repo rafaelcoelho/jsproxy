@@ -5,9 +5,30 @@ A http proxy used to cache request in order to provide a standalone development 
 In order to create the endpoints at your local the file `./config.json` have to configured properly once that one will be used during the runtime to reach out the real server.
 
 ### Configuration Example
+<!-- embedme config.json -->
 ```json
 {
+  "multipleResponseEnable": true,
+  "runningMode": "recorder",
   "nodes": [
+    {
+      "configs": [
+        {
+          "server": "remoteServerAddress",
+          "url": "/wsi/services",
+          "mediaType": "text/xml",
+          "targetPort": 8590
+        }
+      ],
+      "cache": true,
+      "srcPort": 8590,
+      "https": {
+        "enable": false,
+        "keyFile": "privkey.pem",
+        "certFile": "cert.pem",
+        "caFile": "cert.pem"
+      }
+    },
     {
       "configs": [
         {
@@ -29,6 +50,22 @@ In order to create the endpoints at your local the file `./config.json` have to 
   ]
 }
 ```
+
+### Multiple Response Support
+The configuration key `multipleResponseEnable` is utilized in order to provide support for multiple response upon the same request.
+
+By defautl this configuration is set to `false`
+
+For instance:
+ > Read -> Update -> Read
+
+### Running Mode
+The running mode is used to define the proxy behavior and the possibles values are:
+   - **recorder:** the proxy only populates the cache and never provides response using the cache
+   - **playback:** the proxy only provides the response based on existing cache if the cache doesn't have the response an error is returned
+     - If the node is set as `cache: false`the local cache won't be used and is this case the southbound will called
+   - **dual:** the proxy read and write towards cache
+
 ## Cache
 The cache is persisted upon SQLite Database
 
