@@ -7,14 +7,14 @@ var fs = require('fs')
 
 const localConfiguration = require('./config')
 
-const runningMode = localConfiguration.getProperty('runningMode') | 'dual'
+const runningMode = localConfiguration.getProperty('runningMode') || 'dual'
 
 const cacheDB = require('./cache')
 const flushEP = require('./flushEndpoint')
 
 flushEP()
 
-localConfiguration.forEach(cfg => {
+localConfiguration.config.forEach(cfg => {
   let app = express()
 
   cfg.configs.forEach(service => {
