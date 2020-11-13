@@ -1,11 +1,11 @@
-const sqlite = require('sqlite3').verbose();
+const sqlite = require('sqlite3').verbose()
 const localConfiguration = require('./config')
 
 const isMultipleResponseEnable = localConfiguration.getProperty('multipleResponseEnable') | false
 
 var fs = require('fs')
 var dbExists = fs.existsSync('./stub.db')
-var db = null;
+var db = null
 
 if (!dbExists) {
   db = new sqlite.Database('./stub.db', (err) => {
@@ -28,7 +28,7 @@ if (!dbExists) {
 }
 
 var read = (key, callback) => {
-  const query = 'SELECT payload, httpCode, seq FROM cache where id = ?';
+  const query = 'SELECT payload, httpCode, seq FROM cache where id = ?'
 
   db.get(query, [key], (err, row) => {
     if (err) {
@@ -43,7 +43,7 @@ var read = (key, callback) => {
       row.payload = rawPayload[row.seq]
 
       if (rawPayload.length == ++row.seq) {
-        row.seq = 0;
+        row.seq = 0
       }
 
       updateSeq(key, row.seq)
@@ -91,7 +91,7 @@ var write = (key, httpCode, payload) => {
 
 var update = (key, httpCode, payload) => {
   const query = `UPDATE cache SET httpCode = ?, payload = ?
-                 WHERE id = ?`;
+                 WHERE id = ?`
 
   db.run(query, [httpCode, JSON.stringify(payload), key], err => {
     if (err) {
@@ -101,7 +101,7 @@ var update = (key, httpCode, payload) => {
   })
 }
 
-var close = () => db.close();
+var close = () => db.close()
 
 module.exports = {
   read,
