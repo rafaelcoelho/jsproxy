@@ -14,6 +14,10 @@ const flushEP = require('./flushEndpoint')
 
 flushEP()
 
+console.log('-----------------------------------------------')
+console.log('JSPROXY Running in ' + runningMode.toUpperCase() + ' mode !!!')
+console.log('-----------------------------------------------\n')
+
 localConfiguration.config.forEach(cfg => {
   let app = express()
 
