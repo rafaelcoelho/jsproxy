@@ -63,7 +63,7 @@ For instance:
 The running mode is used to define the proxy behavior and the possibles values are:
    - **recorder:** the proxy only populates the cache and never provides response using the cache
    - **playback:** the proxy only provides the response based on existing cache if the cache doesn't have the response an error is returned
-     - If the node is set as `cache: false`the local cache won't be used and is this case the southbound will called
+     - If the node is set as `cache: false`the local cache won't be used and is this case the southbound won't be called
    - **dual:** the proxy read and write towards cache
 
 ## Cache
