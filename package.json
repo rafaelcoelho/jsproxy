@@ -2,11 +2,11 @@
   "name": "jsproxy",
   "version": "1.0.0",
   "description": "A http proxy to cache request towards southbound server",
-  "main": "./src/index.js",
-  "bin": "./src/index.js",
+  "main": "./src/bin.js",
+  "bin": "./src/bin.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-node -- src/index",
+    "start": "babel-node -- src/bin",
     "build": "babel src -d lib"
   },
   "repository": {
