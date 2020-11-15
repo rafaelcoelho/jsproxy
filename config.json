@@ -1,6 +1,6 @@
 {
   "multipleResponseEnable": true,
-  "runningMode": "recorder",
+  "runningMode": "playback",
   "nodes": [
     {
       "configs": [
@@ -35,7 +35,7 @@
           "targetPort": 8081
         }
       ],
-      "srcPort": 8080,
+      "srcPort": 8085,
       "cache": true
     }
   ]

@@ -1,0 +1,9 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "title": "json-server-my",
+      "author": "after_update"
+    }
+  ]
+}
