@@ -6,7 +6,8 @@
   "bin": "./src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-node -- src/index"
+    "start": "babel-node -- src/index",
+    "build": "babel src -d lib"
   },
   "repository": {
     "type": "git",
