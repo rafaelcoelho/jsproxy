@@ -1,8 +1,10 @@
 const run = require('./run')
 const localConfiguration = require('./config')
 
-welcome(localConfiguration)
-run(localConfiguration)
+module.exports = function () {
+  welcome(localConfiguration)
+  run(localConfiguration)
+}
 
 function welcome(cfg) {
   let welcome = `
