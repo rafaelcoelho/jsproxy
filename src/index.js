@@ -1,7 +1,10 @@
+const yargs = require('yargs')
 const run = require('./run')
 const localConfiguration = require('./config')
 
-module.exports = function () {
+module.exports = function (ctx) {
+  parseArguments()
+
   welcome(localConfiguration)
   run(localConfiguration)
 }
@@ -28,6 +31,7 @@ by https://github.com/rafaelcoelho/jsproxy
 
   console.log('-----------------------------------------------')
   console.log('JSPROXY Running in ' + cfg.getProperty('runningMode') || 'dual' + ' mode !!!')
+  console.log('Context is ' + process.argv.context)
   console.log('-----------------------------------------------\n')
 
   let listeningNodes = []
@@ -47,4 +51,19 @@ by https://github.com/rafaelcoelho/jsproxy
   })
 
   console.table(listeningNodes)
+}
+
+function parseArguments() {
+  let args = yargs
+    .option('context', {
+      description: 'Set a context that will be used as a key to load cache',
+      alias: 'c',
+      type: 'string',
+      default: 'noContext'
+    })
+    .help()
+    .alias('help', 'h')
+    .argv;
+
+    process.argv = args
 }
