@@ -112,3 +112,6 @@ dist
 
 #Security Files
 *.pem
+
+#Build artifacts
+lib
