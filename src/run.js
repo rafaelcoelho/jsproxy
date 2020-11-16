@@ -5,9 +5,16 @@ const https = require('https')
 const axios = require('axios').default
 const cacheDB = require('./cache')
 
-module.exports = function(localConfiguration) {
-  const runningMode = localConfiguration.getProperty('runningMode') || 'dual'
-  localConfiguration.config.forEach(cfg => {
+var context
+
+module.exports = function(configuration) {
+  this.context = configuration.context
+
+  cacheDB.init(this.context)
+  const runningMode = configuration.runningMode
+
+
+  configuration.config.forEach(cfg => {
     let app = express()
 
     cfg.configs.forEach(service => {
@@ -17,10 +24,9 @@ module.exports = function(localConfiguration) {
         res.type(service.mediaType)
 
         if (runningMode != 'recorder' && cfg.cache) {
-          let requestIdentifier = req.body + req.originalUrl
-          let hash = md5(requestIdentifier + req.method)
+          let requestIdentifier = getKey(req)
 
-          cacheDB.read(hash, (result) => {
+          cacheDB.read(requestIdentifier, (result) => {
             if (result) {
               res.status(result.httpCode).send(result.payload)
             } else {
@@ -35,21 +41,26 @@ module.exports = function(localConfiguration) {
       app.use(service.url, (req, res) => {
         console.log('Going to call southbound with method | ' + req.method + ' | http://' + service.server + ':' + service.targetPort + req.originalUrl)
 
-        let requestIdentifier = req.body + req.originalUrl
-        let hash = md5(requestIdentifier + req.method)
+        let requestIdentifier = getKey(req)
 
-        if (['recorder', 'dual'].indexOf(runningMode) == -1)
-          return console.error("Won't call southbound due to runningMode = " + runningMode)
+        if (['recorder', 'dual'].indexOf(runningMode) == -1) {
+          res.status(400).send("Won't call southbound due to running Mode = " + runningMode)
+          return console.error("Won't call southbound due to running Mode = " + runningMode)
+        }
 
         sendRequest(service, req, (result, httpCode) => {
           res.status(httpCode).send(result)
-          cacheDB.write(hash, httpCode, result)
+          cacheDB.write(requestIdentifier, httpCode, result)
         })
       })
     })
 
     configureServer(cfg.https, app).listen(cfg.srcPort, _ => { })
   })
+}
+
+function getKey(req) {
+  return md5(req.body + req.originalUrl + req.method) + context
 }
 
 function configureServer(cfg, app) {

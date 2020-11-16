@@ -29,7 +29,8 @@
     "md5": "^2.3.0",
     "nconf": "^0.10.0",
     "npx": "^3.0.0",
-    "sqlite3": "^4.2.0"
+    "sqlite3": "^4.2.0",
+    "yargs": "^16.0.4-candidate.0"
   },
   "devDependencies": {
     "mocha": "^8.2.1",

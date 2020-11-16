@@ -30,8 +30,8 @@ by https://github.com/rafaelcoelho/jsproxy
   console.log(welcome)
 
   console.log('-----------------------------------------------')
-  console.log('JSPROXY Running in ' + cfg.getProperty('runningMode') || 'dual' + ' mode !!!')
-  console.log('Context is ' + process.argv.context)
+  console.log('JSPROXY Running in ' + cfg.runningMode)
+  console.log('Context is ' + cfg.context)
   console.log('-----------------------------------------------\n')
 
   let listeningNodes = []
@@ -59,11 +59,21 @@ function parseArguments() {
       description: 'Set a context that will be used as a key to load cache',
       alias: 'c',
       type: 'string',
-      default: 'noContext'
+      default: 'default'
+    })
+    .option('runningMode', {
+      description: 'Defines the mode tha proxy will run',
+      alias: 'm',
+      type: 'string',
+      default: 'dual',
+      choices: ['dual', 'playback', 'recorder']
     })
     .help()
     .alias('help', 'h')
     .argv;
 
-    process.argv = args
+    localConfiguration.runningMode = args.runningMode
+    localConfiguration['context'] = args.context
+
+    return args
 }
