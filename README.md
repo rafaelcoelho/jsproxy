@@ -110,10 +110,14 @@ To run the app just prompt
 
 ```bash
 $ npm install
-$ node src/bind.js
+$ node src/bin.js -c myContext -m playback
+
+Where:
+-c: context to run (will be used to generate db file name and db key)
+-m: runningMode (the possible values are: dual, playback, recorder)
 ```
 
 To check supported arguments prompt
 ```bash
-$ node src/bind.js -h
+$ node src/bin.js -h
 ```
