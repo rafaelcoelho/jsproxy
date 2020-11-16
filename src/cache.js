@@ -1,30 +1,33 @@
 const sqlite = require('sqlite3').verbose()
 const localConfiguration = require('./config')
-
+const fs = require('fs')
 const isMultipleResponseEnable = localConfiguration.getProperty('multipleResponseEnable') | false
 
-var fs = require('fs')
-var dbExists = fs.existsSync('./stub.db')
-var db = null
+var db
 
-if (!dbExists) {
-  db = new sqlite.Database('./stub.db', (err) => {
+function init(context) {
+  let dbFileName = './data/' + context + '.db'
+  let dbExists = fs.existsSync(dbFileName)
 
-    if (err) {
-      console.error('Error to open db' + err.message)
-    }
+  if (!dbExists) {
+    db = new sqlite.Database(dbFileName, (err) => {
 
-    db.run('CREATE TABLE cache(id text, httpCode text, seq number DEFAULT 0, payload blob)')
-  })
-} else {
-  db = new sqlite.Database('./stub.db', err => {
+      if (err) {
+        console.error('Error to open db' + err.message)
+      }
 
-    if (err) console.error('Error to open db' + err.message)
+      db.run('CREATE TABLE cache(id text, httpCode text, seq number DEFAULT 0, payload blob)')
+    })
+  } else {
+    db = new sqlite.Database(dbFileName, err => {
 
-    let resetSeq = `UPDATE cache SET seq = 0 WHERE id IS NOT NULL`
+      if (err) console.error('Error to open db' + err.message)
 
-    db.run(resetSeq)
-  })
+      let resetSeq = `UPDATE cache SET seq = 0 WHERE id IS NOT NULL`
+
+      db.run(resetSeq)
+    })
+  }
 }
 
 var read = (key, callback) => {
@@ -104,6 +107,7 @@ var update = (key, httpCode, payload) => {
 var close = () => db.close()
 
 module.exports = {
+  init,
   read,
   write,
   close
