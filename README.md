@@ -109,6 +109,11 @@ $json-server --watch restApiResources.json -p 8080
 To run the app just prompt
 
 ```bash
-$npm install
-$node index.js
+$ npm install
+$ node src/bind.js
+```
+
+To check supported arguments prompt
+```bash
+$ node src/bind.js -h
 ```
