@@ -1,6 +1,6 @@
 {
   "name": "jsproxy",
-  "version": "1.0.0",
+  "version": "v0.0.1",
   "description": "A http proxy to cache request towards southbound server",
   "main": "./src/bin.js",
   "bin": "./src/bin.js",
@@ -13,12 +13,19 @@
     "type": "git",
     "url": "git+https://github.com/rafaelcoelho/jsproxy.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Rafael Coelho",
+  "private": false,
+  "license": "MIT",
+  "homepage": "https://github.com/rafaelcoelho/jsproxy#readme",
   "bugs": {
     "url": "https://github.com/rafaelcoelho/jsproxy/issues"
   },
-  "homepage": "https://github.com/rafaelcoelho/jsproxy#readme",
+  "keywords": [
+    "proxy",
+    "cache",
+    "stub",
+    "soap"
+  ],
   "dependencies": {
     "axios": "^0.19.2",
     "body-parser": "^1.19.0",
