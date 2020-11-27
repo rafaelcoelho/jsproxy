@@ -1,5 +1,5 @@
 {
-  "name": "jsproxy",
+  "name": "jsproxy-server",
   "version": "v0.0.1",
   "description": "A http proxy to cache request towards southbound server",
   "main": "./src/bin.js",
