@@ -14,7 +14,7 @@ module.exports = function(configuration) {
   const runningMode = configuration.runningMode
 
 
-  configuration.config.forEach(cfg => {
+  configuration.config().forEach(cfg => {
     let app = express()
 
     cfg.configs.forEach(service => {

@@ -3,9 +3,11 @@ const run = require('./run')
 const localConfiguration = require('./config')
 
 module.exports = function (ctx) {
-  parseArguments()
+  let args = parseArguments()
 
+  localConfiguration.init(args)
   welcome(localConfiguration)
+
   run(localConfiguration)
 }
 
@@ -36,7 +38,7 @@ by https://github.com/rafaelcoelho/jsproxy
 
   let listeningNodes = []
 
-  cfg.config.forEach(node => {
+  cfg.config().forEach(node => {
     class Node {
       constructor(config) {
         this.Target = 'http://' + config.server + ':' + config.targetPort + config.url
@@ -68,7 +70,7 @@ function parseArguments() {
       default: 'dual',
       choices: ['dual', 'playback', 'recorder']
     })
-    .option('configuration', {
+    .option('configurationFile', {
       description: 'The configuration file used to set the JSProxy',
       alias: 'f',
       type: 'string',
