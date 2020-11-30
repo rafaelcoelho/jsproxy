@@ -10,7 +10,7 @@ module.exports = function (ctx) {
 }
 
 function welcome(cfg) {
-  let welcome = `
+  let welcomeMessage = `
 -------------------<<<<<<<<<<<<<-------------------
 by https://github.com/rafaelcoelho/jsproxy
 ------------------->>>>>>>>>>>>>-------------------\n
@@ -27,7 +27,7 @@ by https://github.com/rafaelcoelho/jsproxy
 888P"
 `
 
-  console.log(welcome)
+  console.log(welcomeMessage)
 
   console.log('-----------------------------------------------')
   console.log('JSPROXY Running in ' + cfg.runningMode)
@@ -67,6 +67,12 @@ function parseArguments() {
       type: 'string',
       default: 'dual',
       choices: ['dual', 'playback', 'recorder']
+    })
+    .option('configuration', {
+      description: 'The configuration file used to set the JSProxy',
+      alias: 'f',
+      type: 'string',
+      default: "config.json"
     })
     .help()
     .alias('help', 'h')
