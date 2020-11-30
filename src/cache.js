@@ -6,10 +6,13 @@ const isMultipleResponseEnable = localConfiguration.getProperty('multipleRespons
 var db
 
 function init(context) {
-  let dbFileName = './data/' + context + '.db'
+  const dataDirectory = './data/'
+  let dbFileName = dataDirectory + context + '.db'
   let dbExists = fs.existsSync(dbFileName)
 
   if (!dbExists) {
+    fs.mkdirSync(dataDirectory, { recursive: true })
+
     db = new sqlite.Database(dbFileName, (err) => {
 
       if (err) {
