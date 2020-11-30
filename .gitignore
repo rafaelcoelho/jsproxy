@@ -108,6 +108,7 @@ dist
 !.vscode/launch.json
 
 #Database
+data
 *.db
 
 #Security Files
