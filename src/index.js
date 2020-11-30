@@ -32,6 +32,7 @@ by https://github.com/rafaelcoelho/jsproxy
   console.log(welcomeMessage)
 
   console.log('-----------------------------------------------')
+  console.log('JSPROXY using ' + cfg.configurationFile + ' file as configuration')
   console.log('JSPROXY Running in ' + cfg.runningMode)
   console.log('Context is ' + cfg.context)
   console.log('-----------------------------------------------\n')
@@ -82,6 +83,7 @@ function parseArguments() {
 
     localConfiguration.runningMode = args.runningMode
     localConfiguration['context'] = args.context
+    localConfiguration['configurationFile'] = args.configurationFile
 
     return args
 }
