@@ -2,7 +2,7 @@ const yargs = require('yargs')
 const run = require('./run')
 const localConfiguration = require('./config')
 
-module.exports = function (ctx) {
+module.exports = function () {
   let args = parseArguments()
 
   localConfiguration.init(args)
