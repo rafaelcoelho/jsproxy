@@ -6,12 +6,12 @@ module.exports = function () {
   let args = parseArguments()
 
   localConfiguration.init(args)
-  welcome(localConfiguration)
+  welcome(localConfiguration, args)
 
-  run(localConfiguration)
+  run(localConfiguration, args)
 }
 
-function welcome(cfg) {
+function welcome(cfg, args) {
   let welcomeMessage = `
 -------------------<<<<<<<<<<<<<-------------------
 by https://github.com/rafaelcoelho/jsproxy
@@ -32,6 +32,7 @@ by https://github.com/rafaelcoelho/jsproxy
   console.log(welcomeMessage)
 
   console.log('-----------------------------------------------')
+  console.log('JSPROXY Configuration endpoint is listening on http://localhost:' + args.port + '/jsproxy/v1')
   console.log('JSPROXY using ' + cfg.configurationFile + ' file as configuration')
   console.log('JSPROXY Running in ' + cfg.runningMode)
   console.log('Context is ' + cfg.context)
@@ -76,6 +77,12 @@ function parseArguments() {
       alias: 'f',
       type: 'string',
       default: "config.json"
+    })
+    .option('port', {
+      description: 'The JSProxy Configuration listening port',
+      alias: 'p',
+      type: 'string',
+      default: "7001"
     })
     .help()
     .alias('help', 'h')

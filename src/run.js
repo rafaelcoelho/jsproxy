@@ -4,15 +4,17 @@ const md5 = require('md5')
 const https = require('https')
 const axios = require('axios').default
 const cacheDB = require('./cache')
+const jsproxySetting = require('./endpoint')
 
-var context
+var context = {}
 
-module.exports = function(configuration) {
-  this.context = configuration.context
+module.exports = function(configuration, args) {
+  context.cfg = configuration.context
 
-  cacheDB.init(this.context)
+  cacheDB.init(context.cfg)
+  jsproxySetting.configure(args, context)
+
   const runningMode = configuration.runningMode
-
 
   configuration.config().forEach(cfg => {
     let app = express()
@@ -60,7 +62,7 @@ module.exports = function(configuration) {
 }
 
 function getKey(req) {
-  return md5(req.body + req.originalUrl + req.method) + context
+  return md5(req.body + req.originalUrl + req.method) + context.cfg + context.contextKey
 }
 
 function configureServer(cfg, app) {
