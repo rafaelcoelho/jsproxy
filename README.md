@@ -66,6 +66,25 @@ The running mode is used to define the proxy behavior and the possibles values a
      - If the node is set as `cache: false`the local cache won't be used and is this case the southbound won't be called
    - **dual:** the proxy read and write towards cache
 
+### Configuration Endpoint
+There is a configuration endpoint available in order to set some context on proxy service. The default port is 7001 but is possible to define during initialization, such as:
+
+```bash
+$ node src/bin.js -p 8087
+```
+
+The endpoint is http://{server}:{port}/jsproxy/v1/configuration and POST method is expected.
+
+- **Context Configuration:**  this configuration is used as part of database PK entries in order to group by context each registry based on a operation context. The default value is a empty string ("").  In order to configure this value POST upon JSProxy Configuration endpoint, such as:
+
+```json
+{
+    "context": {
+        "key": "myOperationIdentifier"
+    }
+}
+```
+
 ## Cache
 The cache is persisted upon SQLite Database
 

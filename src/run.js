@@ -6,7 +6,7 @@ const axios = require('axios').default
 const cacheDB = require('./cache')
 const jsproxySetting = require('./endpoint')
 
-var context = {}
+var context = {contextKey: ""}
 
 module.exports = function(configuration, args) {
   context.cfg = configuration.context
