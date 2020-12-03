@@ -11,7 +11,7 @@ var context = {contextKey: ""}
 module.exports = function(configuration, args) {
   context.cfg = configuration.context
 
-  cacheDB.init(context.cfg)
+  cacheDB.init(context.cfg, configuration)
   jsproxySetting.configure(args, context)
 
   const runningMode = configuration.runningMode

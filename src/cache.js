@@ -1,11 +1,11 @@
 const sqlite = require('sqlite3').verbose()
-const localConfiguration = require('./config')
 const fs = require('fs')
-const isMultipleResponseEnable = localConfiguration.getProperty('multipleResponseEnable') | false
 
-var db
+var db, isMultipleResponseEnable
 
-function init(context) {
+function init(context, configuration) {
+  isMultipleResponseEnable = configuration.getProperty('multipleResponseEnable') | false
+
   const dataDirectory = './data/'
   let dbFileName = dataDirectory + context + '.db'
   let dbExists = fs.existsSync(dbFileName)
