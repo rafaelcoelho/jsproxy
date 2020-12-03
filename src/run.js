@@ -5,6 +5,7 @@ const https = require('https')
 const axios = require('axios').default
 const cacheDB = require('./cache')
 const jsproxySetting = require('./endpoint')
+const fs = require('fs')
 
 var context = {contextKey: ""}
 
