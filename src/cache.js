@@ -1,5 +1,6 @@
 const sqlite = require('sqlite3').verbose()
 const fs = require('fs')
+const zlib = require('zlib');
 
 var db, isMultipleResponseEnable
 
@@ -44,7 +45,7 @@ var read = (key, callback) => {
     let rawPayload
 
     if (row) {
-
+      row.payload = zlib.inflateSync(Buffer.from(row.payload)).toString()
       rawPayload = JSON.parse(row.payload)
       row.payload = rawPayload[row.seq]
 
@@ -85,7 +86,7 @@ var write = (key, httpCode, payload) => {
       const query = `INSERT into cache(id, httpCode, payload)
                       VALUES(?, ?, ?)`
 
-      db.run(query, [key, httpCode, JSON.stringify([payload])], errWrite => {
+      db.run(query, [key, httpCode, zlib.deflateSync(JSON.stringify([payload]))], errWrite => {
         if (errWrite) {
           console.log('Error to save in cache: ' + errWrite.message)
           return
@@ -99,7 +100,7 @@ var update = (key, httpCode, payload) => {
   const query = `UPDATE cache SET httpCode = ?, payload = ?
                  WHERE id = ?`
 
-  db.run(query, [httpCode, JSON.stringify(payload), key], err => {
+  db.run(query, [httpCode, zlib.deflateSync(JSON.stringify(payload)), key], err => {
     if (err) {
       console.log('Error to save in cache: ' + err.message)
       return
