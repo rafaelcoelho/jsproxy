@@ -63,7 +63,7 @@ module.exports = function(configuration, args) {
 }
 
 function getKey(req) {
-  return md5(req.body + req.originalUrl + req.method) + context.cfg + context.contextKey
+  return md5(req.body + req.originalUrl + req.method + context.cfg + context.contextKey)
 }
 
 function configureServer(cfg, app) {
