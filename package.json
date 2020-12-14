@@ -4,6 +4,9 @@
   "description": "A http proxy to cache request towards southbound server",
   "main": "./src/bin.js",
   "bin": "./src/bin.js",
+  "engines": {
+    "node": ">=12.18.4"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "babel-node -- src/bin",
