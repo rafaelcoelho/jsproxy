@@ -1,5 +1,26 @@
-# jsproxy
+# The JSProxy
 A http proxy used to cache request in order to provide a standalone development environment
+
+- [The JSProxy](#the-jsproxy)
+  - [Getting Started](#getting-started)
+  - [Setup](#setup)
+    - [Configuration Example](#configuration-example)
+    - [Multiple Response Support](#multiple-response-support)
+    - [Running Mode](#running-mode)
+    - [Configuration Endpoint](#configuration-endpoint)
+  - [Cache Support](#cache-support)
+  - [HTTPS Support](#https-support)
+    - [HTTPS Example Configuration](#https-example-configuration)
+  - [Try it out without real server](#try-it-out-without-real-server)
+  - [Running](#running)
+  - [License](#license)
+
+## Getting Started
+Install JSProxy
+
+```
+npm i -g jsproxy-server-stub
+```
 
 ## Setup
 In order to create the endpoints at your local the file `./config.json` have to configured properly once that one will be used during the runtime to reach out the real server.
@@ -85,13 +106,13 @@ The endpoint is http://{server}:{port}/jsproxy/v1/configuration and POST method 
 }
 ```
 
-## Cache
+## Cache Support
 The cache is persisted upon SQLite Database
 
-## HTTPS
+## HTTPS Support
 The https termination is supported and the settings are done by `./config.json` file upon each node that will be exposed. If the https configuration is not part of the configuration the plain HTTP termination will be used.
 
-### For example
+### HTTPS Example Configuration
 ```json
 {
   "nodes": [
@@ -125,18 +146,30 @@ $json-server --watch restApiResources.json -p 8080
 ```
 
 ## Running
-To run the app just prompt
+To run the app just prompt in case of using git repo
 
 ```bash
 $ npm install
 $ node src/bin.js -c myContext -m playback
+```
+
+To run the app just directly from release version prompt
+```bash
+$ jsproxy-server-stub -c myContext -m playback
+```
 
 Where:
+
 -c: context to run (will be used to generate db file name and db key)
 -m: runningMode (the possible values are: dual, playback, recorder)
-```
+
 
 To check supported arguments prompt
+
 ```bash
-$ node src/bin.js -h
+$ jsproxy-server-stub -h
 ```
+
+## License
+
+MIT
