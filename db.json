@@ -1,0 +1,44 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "brand": "Apple",
+      "description": "Iphone 11",
+      "price": 100
+    },
+    {
+      "id": 2,
+      "brand": "Samsung",
+      "description": "Galaxy S20",
+      "price": 50
+    },
+    {
+      "brand": "Motorola",
+      "description": "Model X",
+      "price": 20,
+      "id": 3
+    },
+    {
+      "brand": "LG",
+      "description": "Model X",
+      "price": 1000,
+      "id": 4
+    },
+    {
+      "brand": "LG",
+      "description": "Model X",
+      "price": 1000,
+      "id": 5
+    }
+  ],
+  "items": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}
