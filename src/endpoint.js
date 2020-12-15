@@ -4,29 +4,35 @@ const fs = require('fs')
 
 var app
 
-function configure(args, context) {
+function configure(args, context, cacheDB) {
 
     app = express()
     app.use(parser.json())
 
     ConfigurationEndpoint(context)
-    FlushEnpoint()
+    FlushEnpoint(cacheDB)
 
     app.listen(args.port)
 }
 
-function FlushEnpoint() {
+function FlushEnpoint(cacheDB) {
 
-    app.post('/jsproxy/v1/write', (req, res, next) => {
-        console.log('Receiving flush request ' + JSON.stringify(req.body))
+    app.post('/jsproxy/v1/flush', (req, res, next) => {
+        let file = req.body.fileName || 'dataBase_dump'
+        file += '.json'
 
-        let code = 400
-        let body = 'Not implemented yet!!!'
+        console.log('Flush database to ./data/' + file)
 
-        res.status(code).json(body)
+        cacheDB.dump((err, result) => {
+            if (err) {
+                res.sendStatus(400).json({ 'message': err.message })
+                return
+            }
+
+            fs.writeFileSync('./data/' + file, JSON.stringify(result))
+            res.status(201).json({ file: file })
+        })
     })
-
-    app.listen(8082)
 }
 
 function ConfigurationEndpoint(context) {

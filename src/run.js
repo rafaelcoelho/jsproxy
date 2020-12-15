@@ -13,9 +13,10 @@ module.exports = function(configuration, args) {
   context.cfg = configuration.context
 
   cacheDB.init(context.cfg, configuration)
-  jsproxySetting.configure(args, context)
+  jsproxySetting.configure(args, context, cacheDB)
 
   const runningMode = configuration.runningMode
+  const saveRequest = configuration.getProperty('saveRequest') || false
 
   configuration.config().forEach(cfg => {
     let app = express()
@@ -53,7 +54,7 @@ module.exports = function(configuration, args) {
 
         sendRequest(service, req, (result, httpCode) => {
           res.status(httpCode).send(result)
-          cacheDB.write(requestIdentifier, httpCode, result)
+          cacheDB.write(requestIdentifier, httpCode, result, saveRequest && Object.keys(req.body) != 0 ? JSON.parse(req.body) : null)
         })
       })
     })

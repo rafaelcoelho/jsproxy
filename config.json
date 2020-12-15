@@ -1,6 +1,7 @@
 {
   "multipleResponseEnable": true,
   "runningMode": "playback",
+  "saveRequest": true,
   "nodes": [
     {
       "configs": [
