@@ -20,7 +20,7 @@ function init(context, configuration) {
         console.error('Error to open db' + err.message)
       }
 
-      db.run('CREATE TABLE cache(id text, httpCode text, seq number DEFAULT 0, payload blob)')
+      db.run('CREATE TABLE cache(id text, httpCode text, seq number DEFAULT 0, payload blob, request text)')
     })
   } else {
     db = new sqlite.Database(dbFileName, err => {
@@ -71,7 +71,7 @@ var updateSeq = (key, seq) => {
   })
 }
 
-var write = (key, httpCode, payload) => {
+var write = (key, httpCode, payload, request) => {
   read(key, (result, resultArray) => {
     if (result) {
       let data = [payload]
@@ -83,10 +83,10 @@ var write = (key, httpCode, payload) => {
 
       update(key, httpCode, data)
     } else {
-      const query = `INSERT into cache(id, httpCode, payload)
-                      VALUES(?, ?, ?)`
+      const query = `INSERT into cache(id, httpCode, payload, request)
+                      VALUES(?, ?, ?, ?)`
 
-      db.run(query, [key, httpCode, zlib.deflateSync(JSON.stringify([payload]))], errWrite => {
+      db.run(query, [key, httpCode, zlib.deflateSync(JSON.stringify([payload])), request ? JSON.stringify(request) : undefined], errWrite => {
         if (errWrite) {
           console.log('Error to save in cache: ' + errWrite.message)
           return
@@ -108,11 +108,42 @@ var update = (key, httpCode, payload) => {
   })
 }
 
+var dump = (callback) => {
+  const query = 'SELECT request, httpCode, payload FROM cache WHERE id IS NOT NULL'
+
+  db.all(query, [], (err, row) => {
+    if (err) {
+      console.error('Error to generate database dump: ' + err.message)
+
+      callback(err)
+      return
+    }
+
+    let result = []
+
+    row.forEach(el => {
+      el.payload = zlib.inflateSync(Buffer.from(el.payload)).toString()
+
+      let data = {}
+
+      data['request'] = JSON.parse(el.request)
+      data['httpCode'] = el.httpCode
+      data['response'] = JSON.parse(el.payload)
+
+      result.push(data)
+    })
+
+    callback(null, result)
+
+  })
+}
+
 var close = () => db.close()
 
 module.exports = {
   init,
   read,
   write,
+  dump,
   close
 }
