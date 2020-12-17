@@ -85,14 +85,14 @@ function configureServer(cfg, app) {
 
 function sendRequest(localConfig, req, resultHandler) {
   let config = {
-    headers: {
-      'Content-Type': localConfig.mediaType
-    },
+    headers: req.headers,
     baseURL: 'http://' + localConfig.server + ':' + localConfig.targetPort,
     url: req.originalUrl,
     method: req.method,
     data: req.body
   }
+
+  config.headers['Content-Type'] = localConfig.mediaType
 
   axios.request(config)
     .then(it => {
