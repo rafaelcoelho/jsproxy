@@ -54,7 +54,7 @@ module.exports = function(configuration, args) {
 
         sendRequest(service, req, (result, httpCode) => {
           res.status(httpCode).send(result)
-          cacheDB.write(requestIdentifier, httpCode, result, saveRequest && Object.keys(req.body) != 0 ? JSON.parse(req.body) : null)
+          cacheDB.write(requestIdentifier, httpCode, result, saveRequest && req.body.length > 0)
         })
       })
     })
